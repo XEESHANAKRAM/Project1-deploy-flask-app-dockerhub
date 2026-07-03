@@ -7,7 +7,6 @@ pipeline {
     }
 
     stages {
-
         stage('Checkout') {
             steps {
                 checkout scm
@@ -16,7 +15,12 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME .'
+                sh '''
+                    docker build \
+                      -t $IMAGE_NAME \
+                      -f docker-jenkins-lab1/Dockerfile \
+                      docker-jenkins-lab1
+                '''
             }
         }
 
@@ -37,7 +41,6 @@ pipeline {
                 '''
             }
         }
-
     }
 
     post {
@@ -50,7 +53,7 @@ pipeline {
         }
 
         failure {
-            echo 'Build failed. Check logs above.'
+            echo 'Build failed.'
         }
     }
 }
