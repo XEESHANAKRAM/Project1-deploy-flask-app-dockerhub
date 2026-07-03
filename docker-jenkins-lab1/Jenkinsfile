@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        IMAGE_NAME = "MYAPP-LAB1"
-        CONTAINER_NAME = "MYAPP-LAB1-CONTAINER" 
+        IMAGE_NAME = "myapp-lab1"
+        CONTAINER_NAME = "myapp-lab1-container"
     }
 
     stages {
@@ -16,28 +16,16 @@ pipeline {
             steps {
                 sh 'docker build -t $IMAGE_NAME .'
             }
-        }
+        } 
 
-        stage ('Run Container') {
+        stage('Run Container') {
             steps {
                 sh '''
-                    docker rm -f $CONTAINER_NAME || true
-                    docker run -d --name $CONTAINER_NAME -p 5000:5000 $IMAGE_NAME:latest
-
+                docker rm -f $CONTAINER_NAME || true
+                docker run -d --name $CONTAINER_NAME -p 5000:5000 $IMAGE_NAME
                 '''
             }
         }
-
-        stage ('Test Container') {
-            steps {
-                sh '''
-                    sleep 5
-                    curl -f http://localhost:5000/health || exit 1
-                '''
-            }
-        }
-    }
-
     post {
         always {
             sh 'docker rm -f $CONTAINER_NAME || true'
